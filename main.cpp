@@ -111,7 +111,8 @@ auto randomNumberBetween = [](int low, int high) {
     std::uniform_int_distribution<int>(low, high),
                       random_engine_ = std::mt19937 {
                       std::random_device{}() }]() mutable {
-    return distribution_(random_engine_);
+    auto rret = distribution_(random_engine_);
+    return rret;
   };
   return randomFunc;
 };
@@ -120,7 +121,6 @@ auto randomNumberBetween = [](int low, int high) {
 void fit_the_third(void) {
   std::cout << "Function: " << __func__ << std::endl;
 
-  //C++14
   std::vector<int> numbers1;
   std::generate_n(std::back_inserter(numbers1), 500, 
     RandomNumberBetween(1, 100));
@@ -135,11 +135,29 @@ void fit_the_third(void) {
   }
   std::cout << '\n' << std::endl;
 
-  // C++11
   std::vector<int> numbers2(500);
-  ranges::generate(numbers2, RandomNumberBetween(1, 100));
+  ranges::generate(numbers2, RandomNumberBetween(0, 99));
   cc = 0;
   for (int number : numbers2) {
+    std::cout << std::setw(4) << number
+              << (++cc % cc_max == 0 ? "\n" : "");
+  }
+  std::cout << '\n' << std::endl;
+
+
+  std::vector<int> numbers3;
+  std::generate_n(std::back_inserter(numbers3), 500,
+    randomNumberBetween(100, 200));
+  for (int number : numbers3) {
+    std::cout << std::setw(4) << number
+              << (++cc % cc_max == 0 ? "\n" : "");
+  }
+  std::cout << '\n' << std::endl;
+
+  std::vector<int> numbers4(500);
+  ranges::generate(numbers4, randomNumberBetween(-99, 0));
+  cc = 0;
+  for (int number : numbers4) {
     std::cout << std::setw(4) << number
               << (++cc % cc_max == 0 ? "\n" : "");
   }
