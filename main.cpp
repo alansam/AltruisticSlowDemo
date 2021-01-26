@@ -72,8 +72,8 @@ namespace ranges
 {
 template<typename Range, typename Generator>
 void generate(Range & range, Generator generator) {
-  return std::generate(std::begin(range), 
-                       std::end(range),    
+  return std::generate(begin(range), 
+                       end(range),    
                        generator);
 }
 
@@ -87,6 +87,10 @@ public:
   RandomNumberBetween(int low = 1, int high = 100)
     : random_engine_{std::random_device{}()},
       distribution_{low, high} {
+    instance_id = instance_counter++;
+    std::cout << "RandomNumberBetween:"
+              << std::setw(3) << instance_id
+              << std::endl;
   }
 
   int operator()() {
@@ -96,7 +100,10 @@ public:
 private:
   std::mt19937 random_engine_;
   std::uniform_int_distribution<int> distribution_;
+  size_t instance_id;
+  static size_t instance_counter;
 };
+size_t RandomNumberBetween::instance_counter(0);
 
 //C++14
 auto randomNumberBetween = [](int low, int high) {
@@ -113,6 +120,7 @@ auto randomNumberBetween = [](int low, int high) {
 void fit_the_third(void) {
   std::cout << "Function: " << __func__ << std::endl;
 
+  //C++14
   std::vector<int> numbers1;
   std::generate_n(std::back_inserter(numbers1), 500, 
     RandomNumberBetween(1, 100));
@@ -127,8 +135,8 @@ void fit_the_third(void) {
   }
   std::cout << '\n' << std::endl;
 
-  /*
-  std::vector<int> numbers2;
+  // C++11
+  std::vector<int> numbers2(500);
   ranges::generate(numbers2, RandomNumberBetween(1, 100));
   cc = 0;
   for (int number : numbers2) {
@@ -136,7 +144,6 @@ void fit_the_third(void) {
               << (++cc % cc_max == 0 ? "\n" : "");
   }
   std::cout << '\n' << std::endl;
-  */
 
 }
 } /* namespace ft3 */
